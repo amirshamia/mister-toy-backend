@@ -1,32 +1,13 @@
 [
     {
-        "_id": "t101",
-        "name": "Talking Do",
-        "price": 123,
-        "labels": "['Doll', 'Battery Powered', 'Baby']",
-        "createdAt": 1631031801011,
-        "inStock": true
-    },
-    {
-        "name": "Susita-422",
+        "name": "Toy-55",
         "labels": [
             "Art",
-            "Outdoor",
-            "Puzzle"
+            "Baby",
+            "Battery Powered"
         ],
-        "price": 3143,
+        "price": 116,
         "inStock": false,
-        "_id": "Beqz8"
-    },
-    {
-        "name": "Susita-700",
-        "labels": [
-            "Outdoor",
-            "Outdoor",
-            "Box game"
-        ],
-        "price": 5804,
-        "inStock": false,
-        "_id": "yCvxZ"
+        "_id": "plRge"
     }
 ]
