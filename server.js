@@ -33,9 +33,9 @@ app.use(express.static('public'))
 // **************** toys API ****************:
 // List
 app.get('/api/toy', (req, res) => {
-    // const { txt, maxPrice } = req.query
-    // const filterBy = { txt, maxPrice: +maxPrice }
-    toyService.query()
+    const { name, price, label } = req.query
+    const filterBy = { name, price, label }
+    toyService.query(filterBy)
         .then(toys => {
             console.log(toys);
             res.send(toys)
@@ -71,14 +71,15 @@ app.post('/api/toy', (req, res) => {
 app.put('/api/toy', (req, res) => {
     // const loggedinUser = userService.validateToken(req.cookies.loginToken)
     // if (!loggedinUser) return res.status(401).send('Cannot update toy')
-
-    const { name, labels, price, _id, inStock } = req.body
+    console.log(req.body);
+    const { name, labels, price, _id, inStock, img } = req.body
     const toy = {
         _id,
         name,
         labels,
         price: +price,
-        inStock
+        inStock,
+        img
     }
     toyService.save(toy)
         .then((savedtoy) => {
