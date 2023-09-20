@@ -1,0 +1,18 @@
+[
+    {
+        "_id": "t101",
+        "name": "Talking Doll",
+        "price": 123,
+        "labels": "['Doll', 'Battery Powered', 'Baby']",
+        "createdAt": 1631031801011,
+        "inStock": true
+    },
+    {
+        "_id": "t102",
+        "name": "buzz Doll",
+        "price": 313,
+        "labels": "['Doll', 'Battery Powered', 'Outdoor']",
+        "createdAt": 1631031801011,
+        "inStock": true
+    }
+]
