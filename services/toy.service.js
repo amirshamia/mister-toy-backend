@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { utilService } from './util.service.js'
+import _ from 'lodash'
 
 const toys = utilService.readJsonFile('data/toy.json')
 
@@ -17,10 +18,13 @@ function query(filterBy = {}) {
     }
 
     if (filterBy.price) {
-        toysToDisplay = toysToDisplay.filter(toy => toy.price <= filterBy.price)
+        toysToDisplay = toysToDisplay.filter(toy =>_.inRange(toy.price,filterBy.price[0],filterBy.price[1] ))
     }
     if (filterBy.label) {
-        toysToDisplay = toysToDisplay.filter(toy=> toy.labels.includes(filterBy.label) )
+        toysToDisplay = toysToDisplay.filter(toy=> {
+            const diff = _.difference(filterBy.label, toy.labels);
+            return _.isEmpty(diff); 
+        })
     }
 
     return Promise.resolve(toysToDisplay)
@@ -50,6 +54,8 @@ function save(toy) {
         toyToUpdate.labels = toy.labels
         toyToUpdate.price = toy.price
         toyToUpdate.inStock = toy.inStock
+        toyToUpdate.img = toy.img
+
 
     } else {
         toy._id = _makeId()

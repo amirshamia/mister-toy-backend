@@ -37,7 +37,6 @@ app.get('/api/toy', (req, res) => {
     const filterBy = { name, price, label }
     toyService.query(filterBy)
         .then(toys => {
-            console.log(toys);
             res.send(toys)
         })
         .catch(err => {
@@ -49,13 +48,15 @@ app.get('/api/toy', (req, res) => {
 // Add
 app.post('/api/toy', (req, res) => {
 
-    const { name, labels, price, inStock } = req.body
+    const { name, labels, price, inStock,img ,createdAt} = req.body
 
     const toy = {
         name,
         labels: labels,
         price: +price,
-        inStock: inStock
+        inStock: inStock,
+        img,
+        createdAt
     }
     toyService.save(toy)
         .then(savedtoy => {
@@ -71,15 +72,15 @@ app.post('/api/toy', (req, res) => {
 app.put('/api/toy', (req, res) => {
     // const loggedinUser = userService.validateToken(req.cookies.loginToken)
     // if (!loggedinUser) return res.status(401).send('Cannot update toy')
-    console.log(req.body);
-    const { name, labels, price, _id, inStock, img } = req.body
+    const { name, labels, price, _id, inStock, img,createdAt } = req.body
     const toy = {
         _id,
         name,
         labels,
         price: +price,
         inStock,
-        img
+        img,
+        createdAt
     }
     toyService.save(toy)
         .then((savedtoy) => {
@@ -192,7 +193,7 @@ app.get('/**', (req, res) => {
 
 
 // Listen will always be the last line in our server!
-const port = 3030
+const port = process.env.PORT || 3030
 app.listen(port, () => {
     loggerService.info(`Server listening on port http://127.0.0.1:${port}/`)
 })
