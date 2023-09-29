@@ -26,5 +26,19 @@
         "fullname": "Mcbobo",
         "score": 10000,
         "_id": "cVPQr"
+    },
+    {
+        "username": "Amirshamia",
+        "password": "123",
+        "fullname": "אמיר שמיע",
+        "score": 10000,
+        "_id": "UvqP9"
+    },
+    {
+        "username": "popo",
+        "password": "popo",
+        "fullname": "popo pa",
+        "score": 10000,
+        "_id": "RNbZK"
     }
 ]
