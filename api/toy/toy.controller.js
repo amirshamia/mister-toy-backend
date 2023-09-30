@@ -4,13 +4,12 @@ import { toyService } from './toy.service.js'
 export async function getToys(req, res) {
     try {
         const filterBy = {
-            name: req.query.txt || '',
-            price: req.query.price || [],
-            label: req.query.price || [],
+            name: req.query.name || '',
+            price: req.query.price || [0,500],
+            label: req.query.label || ['On wheels', 'Box game', 'Art', 'Baby', 'Doll', 'Puzzle', 'Outdoor', 'Battery Powered'],
         }
         loggerService.debug('Getting toys', filterBy)
         const toys = await toyService.query(filterBy)
-        loggerService.info(toys);
         res.json(toys)
     } catch (err) {
         loggerService.error('Failed to get toys', err)
@@ -46,6 +45,7 @@ export async function addToy(req, res) {
 export async function updateToy(req, res) {
     try {
         const toy = req.body
+        loggerService.info(req.body)
         const updatedToy = await toyService.update(toy)
         res.json(updatedToy)
     } catch (err) {

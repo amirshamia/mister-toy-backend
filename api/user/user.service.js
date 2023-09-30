@@ -17,7 +17,7 @@ async function query(filterBy = {}) {
     const criteria = _buildCriteria(filterBy)
     try {
         const collection = await dbService.getCollection('user')
-        var users = await collection.find(criteria).sort({nickname: -1}).toArray()
+        var users = await collection.find(criteria).sort({ nickname: -1 }).toArray()
         users = users.map(user => {
             delete user.password
             user.isHappy = true
@@ -90,13 +90,18 @@ async function add(user) {
         if (existUser) throw new Error('Username taken')
 
         // peek only updatable fields!
+
+        const collection = await dbService.getCollection('user')
+        const countUsers = await collection.count((err, count) => {
+            return count
+        })
+        const isAdmin = countUsers === 0 ? true : false
         const userToAdd = {
             username: user.username,
             password: user.password,
             fullname: user.fullname,
-            score: user.score || 0
+            isAdmin
         }
-        const collection = await dbService.getCollection('user')
         await collection.insertOne(userToAdd)
         return userToAdd
     } catch (err) {
