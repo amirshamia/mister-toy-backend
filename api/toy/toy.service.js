@@ -13,7 +13,9 @@ export const toyService = {
     getById,
     remove,
     add,
-    update
+    update,
+    addToyMsg,
+    addToyReview
 }
 async function query(filterBy = {}) {
     console.log(filterBy);
@@ -36,9 +38,8 @@ async function query(filterBy = {}) {
 
 async function getById(toyId) {
     try {
-        loggerService.info(toyId)
         const collection = await dbService.getCollection('toys')
-        const toy = collection.findOne({ _id:new ObjectId(toyId)})
+        const toy = collection.findOne({ _id: new ObjectId(toyId) })
 
         return toy
     } catch (err) {
@@ -51,7 +52,6 @@ async function getById(toyId) {
 async function remove(toyId) {
     try {
         const collection = await dbService.getCollection('toys')
-        loggerService.info(toyId)
         await collection.deleteOne({ _id: new ObjectId(toyId) })
     } catch (err) {
         loggerService.error(`cannot remove toy ${toyId}`, err)
@@ -64,7 +64,6 @@ async function add(toy) {
     try {
         const collection = await dbService.getCollection('toys')
         await collection.insertOne(toy)
-        loggerService.info(toy)
 
         return toy
     } catch (err) {
@@ -81,11 +80,11 @@ async function update(toy) {
             labels: toy.labels,
             inStock: toy.inStock,
             createdAt: toy.createdAt,
-            img: toy.img
+            img: toy.img,
+        
         }
-        loggerService.info(toyToSave)
         const collection = await dbService.getCollection('toys')
-        await collection.updateOne({ _id: new ObjectId(toy._Id) }, { $set: toyToSave })
+        await collection.updateOne({ _id: new ObjectId(toy._id) }, { $set: toyToSave })
         return toy
     } catch (err) {
         loggerService.error(`cannot update toy ${toy._Id}`, err)
@@ -93,13 +92,35 @@ async function update(toy) {
     }
 }
 
-
-
-function _makeId(length = 5) {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+async function addToyMsg(toyId, msg) {
+    try {
+        console.log('process.env.SECRET1 from toyMsg', process.env.SECRET1)
+        loggerService.info(toyId, msg)
+        console.log('test msg:', msg);
+        const collection = await dbService.getCollection('toys')
+        await collection.updateOne(
+            { _id: new ObjectId(toyId) },
+            { $push: { msgs:msg  } }
+        )
+        return msg
+    } catch (err) {
+        loggerService.error(`cannot add toy msg ${toyId}`, err)
+        throw err
     }
-    return text;
 }
+
+
+async function addToyReview(toyId, msg) {
+    try {
+        console.log('process.env.SECRET1 from toyMsg', process.env.SECRET1)
+   
+        const collection = await dbService.getCollection('reviews')
+        await collection.insertOne(msg)
+        return msg
+    } catch (err) {
+        loggerService.error(`cannot add toy msg ${toyId}`, err)
+        throw err
+    }
+}
+
+

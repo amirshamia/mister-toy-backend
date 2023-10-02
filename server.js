@@ -3,13 +3,14 @@ import { fileURLToPath } from 'url';
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import http from 'http'
 
-import { toyService } from './api/toy/toy.service.js'
-import { userService } from './services/user.service.js'
 import { loggerService } from './services/logger.service.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express()
+const server = http.createServer(app)
+
 
 
 // App Configuration
@@ -31,12 +32,16 @@ app.use(express.static('public'))
 import { authRoutes } from './api/auth/auth.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
 import { toyRoutes } from './api/toy/toy.routes.js'
+import { setupSocketAPI } from './services/socket.service.js'
+// import { setupAsyncLocalStorage } from './middlewares/setupAls.middleware.js'
 
+// app.all('*', setupAsyncLocalStorage)
 
 // routes
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/toy', toyRoutes)
+setupSocketAPI(server)
 
 // **************** toys API ****************:
 // List
@@ -199,9 +204,9 @@ app.get('/**', (req, res) => {
 })
 
 
-
 // Listen will always be the last line in our server!
 const port = process.env.PORT || 3030
-app.listen(port, () => {
-    loggerService.info(`Server listening on port http://127.0.0.1:${port}/`)
+
+server.listen(port, () => {
+    loggerService.info('Server is running on port: ' + port)
 })

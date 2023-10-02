@@ -1,7 +1,7 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../../middlewares/requireAuth.middleware.js'
 import { log } from '../../middlewares/logger.middleware.js'
-import { getToys, getToyById, addToy, updateToy, removeToy, addToyMsg, removeToyMsg } from './toy.controller.js'
+import { getToys, getToyById, addToy, updateToy, removeToy, addToyMsg, removeToyMsg, addToyReview } from './toy.controller.js'
 
 export const toyRoutes = express.Router()
 
@@ -11,8 +11,11 @@ export const toyRoutes = express.Router()
 toyRoutes.get('', log, getToys)
 toyRoutes.get('/:id', getToyById)
 toyRoutes.post('/', requireAuth,requireAdmin, addToy)
-toyRoutes.put('/', requireAuth,requireAdmin, updateToy)
+toyRoutes.put('/', updateToy)
 toyRoutes.delete('/:id', requireAuth,requireAdmin, removeToy)
+toyRoutes.post('/:id/msg', requireAuth, addToyMsg)
+toyRoutes.post('/:id/review', requireAuth, addToyReview)
+
 
 // router.delete('/:id', requireAuth, requireAdmin, removetoy)
 

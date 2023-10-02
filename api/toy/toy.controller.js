@@ -1,4 +1,5 @@
 import { loggerService } from '../../services/logger.service.js'
+import { socketService } from '../../services/socket.service.js'
 import { toyService } from './toy.service.js'
 
 export async function getToys(req, res) {
@@ -33,8 +34,9 @@ export async function addToy(req, res) {
 
     try {
         const toy = req.body
-        toy.owner = loggedinUser
         const addedToy = await toyService.add(toy)
+        socketService.broadcast({ type: 'toy-added', data: addedToy, userId: loggedinUser._id })
+
         res.json(addedToy)
     } catch (err) {
         loggerService.error('Failed to add toy', err)
@@ -55,9 +57,13 @@ export async function updateToy(req, res) {
 }
 
 export async function removeToy(req, res) {
+    const { loggedinUser } = req
+
     try {
         const toyId = req.params.id
         await toyService.remove(toyId)
+        socketService.broadcast({ type: 'toy-removed', data: toyId, userId: loggedinUser._id })
+
         res.send()
     } catch (err) {
         loggerService.error('Failed to remove toy', err)
@@ -67,14 +73,36 @@ export async function removeToy(req, res) {
 
 export async function addToyMsg(req, res) {
     const { loggedinUser } = req
+  const { _id, fullname } = loggedinUser
+loggerService.info(req.body)
     try {
         const toyId = req.params.id
         const msg = {
             txt: req.body.txt,
-            by: loggedinUser,
+            by: { _id, fullname },
+            id: req.body.id
         }
+        console.log(msg,'msg');
         const savedMsg = await toyService.addToyMsg(toyId, msg)
         res.json(savedMsg)
+    } catch (err) {
+        loggerService.error('Failed to update toy', err)
+        res.status(500).send({ err: 'Failed to update toy' })
+    }
+}
+export async function addToyReview(req, res) {
+    const { loggedinUser } = req
+  const { _id, fullname } = loggedinUser
+    try {
+        const toyId = req.params.id
+        const review = {
+            txt: req.body.txt,
+            userId: req.body.userId,
+            toyId: req.body.toyId
+        }
+        console.log(review,'review');
+        const savedReview = await toyService.addToyReview(toyId, review)
+        res.json(savedReview)
     } catch (err) {
         loggerService.error('Failed to update toy', err)
         res.status(500).send({ err: 'Failed to update toy' })
